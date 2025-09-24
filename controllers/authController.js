@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-
+import jwt from "jsonwebtoken"
 // REGISTER
 export const register = async (req, res) => {
     try {
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
             return res.status(400).json({ message: "Role and password are required" });
         }
 
-        // چک تکراری بودن ایمیل (اختیاری چون شاید فقط موبایل بده)
+
         if (email) {
             const existing = await User.findOne({ email });
             if (existing) {
@@ -38,11 +38,11 @@ export const register = async (req, res) => {
             }
         }
 
-        // هش پسورد
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // ساخت یوزر بر اساس role
+
         let newUser;
 
         if (role === "consultant") {
@@ -95,7 +95,7 @@ export const register = async (req, res) => {
                 name,
                 email,
                 password: hashedPassword,
-                isVerified: true, // ادمین خودش تأیید شده است
+                isVerified: true,
             });
         }
 
@@ -116,6 +116,8 @@ export const register = async (req, res) => {
             },
         });
     } catch (err) {
+        console.log(err);
+
         res.status(500).json({ error: err.message });
     }
 };
@@ -143,12 +145,14 @@ export const login = async (req, res) => {
         }
 
         if ((user.role === "consultant" || user.role === "developer") && !user.isVerified) {
+            console.log("Error");
+
             return res
                 .status(403)
                 .json({ message: "Your account is not verified by admin yet" });
         }
 
-        // تولید JWT
+
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET,
