@@ -5,6 +5,11 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors"
 import authRoutes from "./routes/authRotes.js"
+import requestRoutes from "./routes/requestRoutes.js"
+import projectRoutes from "./routes/projectRoutes.js"
+import visitRoutes from "./routes/visitRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
+
 
 dotenv.config();
 const app = express();
@@ -15,6 +20,12 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes)
+app.use("/api/request", requestRoutes)
+app.use("/api/projcets", projectRoutes)
+app.use("/api/visits", visitRoutes)
+app.use("/api/admin", adminRoutes)
+
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
