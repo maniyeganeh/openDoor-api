@@ -53,6 +53,8 @@ export const register = async (req, res) => {
             }
 
             newUser = new User({
+                name,
+                email,
                 role,
                 password: hashedPassword,
                 mobile,
