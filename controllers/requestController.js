@@ -47,10 +47,14 @@ export const createRequest = async (req, res) => {
 };
 
 export const getRequestsForConsultant = async (req, res) => {
+
+
     try {
-        const consultantId = req.user.id;
+        const consultantId = req.user._id;
         const requests = await Request.find({ consultant: consultantId }).populate("project");
-        res.json(requests);
+
+
+        return res.status(200).json(requests);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
